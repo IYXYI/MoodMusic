@@ -1,1 +1,14 @@
 
+/* style.css */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin-top: 100px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+}
+input, button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
