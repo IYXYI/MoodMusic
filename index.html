@@ -101,135 +101,160 @@
 
   
 <script>
-    const breathingGame = document.getElementById('breathingGame');
-  const breathCircle = document.getElementById('breathCircle');
-  const breathInstruction = document.getElementById('breathInstruction');
-  const startBreathBtn = document.getElementById('startBreathBtn');
-  const stopBreathBtn = document.getElementById('stopBreathBtn');
+const breathingGame = document.getElementById('breathingGame');
+const breathCircle = document.getElementById('breathCircle');
+const breathInstruction = document.getElementById('breathInstruction');
+const startBreathBtn = document.getElementById('startBreathBtn');
+const stopBreathBtn = document.getElementById('stopBreathBtn');
 
-  let breathInterval;
-  let breathStep = 0;
+let breathInterval;
+let breathStep = 0;
 
-  function breatheCycle() {
-    switch(breathStep) {
-      case 0:
-        breathInstruction.textContent = "Breathe in slowly...";
-        breathCircle.style.transform = "scale(1.5)";
-        break;
-      case 1:
-        breathInstruction.textContent = "Hold your breath...";
-        // Keep circle expanded
-        break;
-      case 2:
-        breathInstruction.textContent = "Breathe out slowly...";
-        breathCircle.style.transform = "scale(1)";
-        break;
-      case 3:
-        breathInstruction.textContent = "Hold...";
-        // Keep circle small
-        break;
-    }
-    breathStep = (breathStep + 1) % 4;
+function breatheCycle() {
+  switch(breathStep) {
+    case 0:
+      breathInstruction.textContent = "Breathe in slowly...";
+      breathCircle.style.transform = "scale(1.5)";
+      break;
+    case 1:
+      breathInstruction.textContent = "Hold your breath...";
+      break;
+    case 2:
+      breathInstruction.textContent = "Breathe out slowly...";
+      breathCircle.style.transform = "scale(1)";
+      break;
+    case 3:
+      breathInstruction.textContent = "Hold...";
+      break;
   }
+  breathStep = (breathStep + 1) % 4;
+}
 
-  startBreathBtn.onclick = () => {
-    breathingGame.style.display = 'block';
-    startBreathBtn.style.display = 'none';
-    stopBreathBtn.style.display = 'inline-block';
+startBreathBtn.onclick = () => {
+  // Start breathing only if not already running
+  if (!breathInterval) {
     breatheCycle(); // start immediately
     breathInterval = setInterval(breatheCycle, 4000); // 4 seconds per step
-  };
-
-  stopBreathBtn.onclick = () => {
-    clearInterval(breathInterval);
-    breathInstruction.textContent = "";
-    breathCircle.style.transform = "scale(1)";
-    breathingGame.style.display = 'none';
-    startBreathBtn.style.display = 'inline-block';
-    stopBreathBtn.style.display = 'none';
-  };
-  
-  const startBtn = document.getElementById('startBtn');
-  const responseEl = document.getElementById('response');
-  const musicFrame = document.getElementById('musicFrame');
-  const chatbot = document.getElementById('chatbot');
-
-  const moods = {
-    happy: {
-      messages: ["You're radiating joy! Keep shining! 🌞", "Spread those good vibes! 😄"],
-      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
-      bg: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
-      showChatbot: false,
-    },
-    sad: {
-      messages: ["It's okay to feel down sometimes 🌧️", "This too shall pass 🌈"],
-      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
-      bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      showChatbot: true,
-    },
-    excited: {
-      messages: ["You're on fire! Keep it up! 🚀", "Let's channel that energy! 🔥"],
-      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
-      bg: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
-      showChatbot: false,
-    },
-    default: {
-      messages: ["Stay curious and grounded.", "Every feeling is valid."],
-      music: "",
-      bg: 'linear-gradient(135deg, #00c6ff, #0072ff)',
-      showChatbot: false,
-    }
-  };
-
-  // Speech recognition setup
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
-
-  startBtn.onclick = () => {
-    if (!recognition) {
-      alert('Sorry, your browser does not support speech recognition.');
-      return;
-    }
-    recognition.lang = 'en-US';
-    recognition.start();
-    responseEl.textContent = 'Listening... Speak your mood';
-    chatbot.style.display = 'none';
-  };
-
-  if (recognition) {
-    recognition.onresult = (event) => {
-      let spokenText = event.results[0][0].transcript.toLowerCase();
-      responseEl.textContent = `You said: "${spokenText}"`;
-
-      // Detect mood from recognized text by simple keyword match
-      let detectedMood = Object.keys(moods).find(mood =>
-        spokenText.includes(mood)
-      ) || 'default';
-
-      const moodData = moods[detectedMood];
-
-      // Update background color
-      document.body.style.background = moodData.bg;
-
-      // Show response message randomly
-      const msg = moodData.messages[Math.floor(Math.random() * moodData.messages.length)];
-      responseEl.textContent = msg;
-
-      // Set music iframe src or clear it
-      musicFrame.src = moodData.music || '';
-
-      // Show chatbot if needed
-      chatbot.style.display = moodData.showChatbot ? 'flex' : 'none';
-    };
-
-    recognition.onerror = (event) => {
-      responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
-    };
-
-    recognition.onend = () => {
-      // recognition stops automatically after user stops speaking
-    };
+    startBreathBtn.style.display = 'none';
+    stopBreathBtn.style.display = 'inline-block';
   }
+};
+
+stopBreathBtn.onclick = () => {
+  clearInterval(breathInterval);
+  breathInterval = null;
+  breathInstruction.textContent = "";
+  breathCircle.style.transform = "scale(1)";
+  breathingGame.style.display = 'none';
+  startBreathBtn.style.display = 'inline-block';
+  stopBreathBtn.style.display = 'none';
+};
+
+const startBtn = document.getElementById('startBtn');
+const responseEl = document.getElementById('response');
+const musicFrame = document.getElementById('musicFrame');
+const chatbot = document.getElementById('chatbot');
+
+const moods = {
+  happy: {
+    messages: ["You're radiating joy! Keep shining! 🌞", "Spread those good vibes! 😄"],
+    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
+    bg: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+    showChatbot: false,
+  },
+  sad: {
+    messages: ["It's okay to feel down sometimes 🌧️", "This too shall pass 🌈"],
+    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
+    bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    showChatbot: true,
+  },
+  excited: {
+    messages: ["You're on fire! Keep it up! 🚀", "Let's channel that energy! 🔥"],
+    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
+    bg: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
+    showChatbot: false,
+  },
+  default: {
+    messages: ["Stay curious and grounded.", "Every feeling is valid."],
+    music: "",
+    bg: 'linear-gradient(135deg, #00c6ff, #0072ff)',
+    showChatbot: false,
+  }
+};
+
+// Speech recognition setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+startBtn.onclick = () => {
+  if (!recognition) {
+    alert('Sorry, your browser does not support speech recognition.');
+    return;
+  }
+  recognition.lang = 'en-US';
+  recognition.start();
+  responseEl.textContent = 'Listening... Speak your mood';
+  chatbot.style.display = 'none';
+  breathingGame.style.display = 'none';
+  clearInterval(breathInterval);
+  breathInterval = null;
+  breathInstruction.textContent = "";
+  breathCircle.style.transform = "scale(1)";
+  startBreathBtn.style.display = 'inline-block';
+  stopBreathBtn.style.display = 'none';
+};
+
+if (recognition) {
+  recognition.onresult = (event) => {
+    let spokenText = event.results[0][0].transcript.toLowerCase();
+    // Detect mood by simple keyword match
+    let detectedMood = Object.keys(moods).find(mood =>
+      spokenText.includes(mood)
+    ) || 'default';
+
+    const moodData = moods[detectedMood];
+
+    // Update background
+    document.body.style.background = moodData.bg;
+
+    // Show message
+    const msg = moodData.messages[Math.floor(Math.random() * moodData.messages.length)];
+    responseEl.textContent = msg;
+
+    // Set music iframe
+    musicFrame.src = moodData.music || '';
+
+    // Show chatbot if mood sad
+    chatbot.style.display = moodData.showChatbot ? 'flex' : 'none';
+
+    // Show breathing game if sad, else hide and reset
+    if (detectedMood === 'sad') {
+      breathingGame.style.display = 'block';
+      startBreathBtn.style.display = 'inline-block';
+      stopBreathBtn.style.display = 'none';
+      breathInstruction.textContent = "";
+      breathCircle.style.transform = "scale(1)";
+      clearInterval(breathInterval);
+      breathInterval = null;
+    } else {
+      breathingGame.style.display = 'none';
+      clearInterval(breathInterval);
+      breathInterval = null;
+      breathInstruction.textContent = "";
+      breathCircle.style.transform = "scale(1)";
+      startBreathBtn.style.display = 'inline-block';
+      stopBreathBtn.style.display = 'none';
+    }
+  };
+
+  recognition.onerror = (event) => {
+    responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
+  };
+
+  recognition.onend = () => {
+    // Recognition stops automatically after user stops speaking
+  };
+}
 </script>
 </body>
 </html>
