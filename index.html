@@ -1,76 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mood Music App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white;
-    }
-    input, button {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin: 5px;
-      font-size: 16px;
-    }
-    #musicFrame {
-      margin-top: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-    #response {
-      margin-top: 20px;
-      font-size: 20px;
-      min-height: 24px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Future MoodMusic 2.0</title>
+<style>
+  body {
+    margin: 0; 
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    transition: background 1.5s ease;
+  }
+  #startBtn {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    background: #fff;
+    color: #2575fc;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px #fff;
+  }
+  #response {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    min-height: 48px;
+  }
+  #chatbot {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 320px;
+    background: rgba(255 255 255 / 0.9);
+    color: #222;
+    border-radius: 16px;
+    box-shadow: 0 0 25px #2575fcaa;
+    padding: 20px;
+    display: none;
+    flex-direction: column;
+  }
+  #chatbot h3 {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+  }
+  #chatbot p {
+    font-size: 1rem;
+  }
+  iframe {
+    border-radius: 15px;
+    box-shadow: 0 0 20px #fff;
+    width: 320px;
+    height: 80px;
+    margin-top: 20px;
+  }
+</style>
 </head>
 <body>
-  <input type="text" id="mood" placeholder="How are you feeling today?" />
-  <button onclick="generateResponse()">Go</button>
-  <p id="response"></p>
+  <button id="startBtn">Speak Your Mood</button>
+  <div id="response"></div>
+  <iframe id="musicFrame" src="" allow="autoplay" ></iframe>
+  
+  <div id="chatbot">
+    <h3>Hey, I noticed you're feeling sad 😔</h3>
+    <p>Try this breathing exercise: Breathe in for 4 seconds, hold for 7, breathe out for 8. Repeat 3 times.</p>
+  </div>
 
-  <iframe id="musicFrame" width="300" height="80" style="border:none;"></iframe>
+<script>
+  const startBtn = document.getElementById('startBtn');
+  const responseEl = document.getElementById('response');
+  const musicFrame = document.getElementById('musicFrame');
+  const chatbot = document.getElementById('chatbot');
 
-  <script>
-    function generateResponse() {
-      const moodInput = document.getElementById('mood');
-      const mood = moodInput.value.trim().toLowerCase();
-      const responseEl = document.getElementById('response');
-      const musicFrame = document.getElementById('musicFrame');
-
-      const responses = {
-        happy: ["Keep that joy flowing 🌞", "Smile and share the vibes! 😄"],
-        sad: ["It's okay. Take a deep breath 🌧️", "Things will get better 🌈"],
-        excited: ["Ride the wave! 🚀", "Channel that energy! 🔥"],
-        default: ["Stay grounded, stay curious.", "Every emotion has its place."]
-      };
-
-      const musicLinks = {
-        happy: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
-        sad: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
-        excited: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v"
-      };
-
-      // Pick a random response for the mood or default
-      const responseList = responses[mood] || responses.default;
-      responseEl.textContent = responseList[Math.floor(Math.random() * responseList.length)];
-
-      // Show the music playlist or clear the iframe if mood not recognized
-      if (musicLinks[mood]) {
-        musicFrame.src = musicLinks[mood];
-        musicFrame.style.display = "inline";
-      } else {
-        musicFrame.src = "";
-        musicFrame.style.display = "none";
-      }
+  const moods = {
+    happy: {
+      messages: ["You're radiating joy! Keep shining! 🌞", "Spread those good vibes! 😄"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
+      bg: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+      showChatbot: false,
+    },
+    sad: {
+      messages: ["It's okay to feel down sometimes 🌧️", "This too shall pass 🌈"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
+      bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      showChatbot: true,
+    },
+    excited: {
+      messages: ["You're on fire! Keep it up! 🚀", "Let's channel that energy! 🔥"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
+      bg: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
+      showChatbot: false,
+    },
+    default: {
+      messages: ["Stay curious and grounded.", "Every feeling is valid."],
+      music: "",
+      bg: 'linear-gradient(135deg, #00c6ff, #0072ff)',
+      showChatbot: false,
     }
-  </script>
+  };
+
+  // Speech recognition setup
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+  startBtn.onclick = () => {
+    if (!recognition) {
+      alert('Sorry, your browser does not support speech recognition.');
+      return;
+    }
+    recognition.lang = 'en-US';
+    recognition.start();
+    responseEl.textContent = 'Listening... Speak your mood';
+    chatbot.style.display = 'none';
+  };
+
+  if (recognition) {
+    recognition.onresult = (event) => {
+      let spokenText = event.results[0][0].transcript.toLowerCase();
+      responseEl.textContent = `You said: "${spokenText}"`;
+
+      // Detect mood from recognized text by simple keyword match
+      let detectedMood = Object.keys(moods).find(mood =>
+        spokenText.includes(mood)
+      ) || 'default';
+
+      const moodData = moods[detectedMood];
+
+      // Update background color
+      document.body.style.background = moodData.bg;
+
+      // Show response message randomly
+      const msg = moodData.messages[Math.floor(Math.random() * moodData.messages.length)];
+      responseEl.textContent = msg;
+
+      // Set music iframe src or clear it
+      musicFrame.src = moodData.music || '';
+
+      // Show chatbot if needed
+      chatbot.style.display = moodData.showChatbot ? 'flex' : 'none';
+    };
+
+    recognition.onerror = (event) => {
+      responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
+    };
+
+    recognition.onend = () => {
+      // recognition stops automatically after user stops speaking
+    };
+  }
+</script>
 </body>
 </html>
