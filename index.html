@@ -1,116 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MoodMusic Test</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    margin-top: 80px;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  h1 {
-    font-weight: 700;
-    margin-bottom: 30px;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  }
-  input[type="text"] {
-    width: 250px;
-    padding: 12px 15px;
-    border-radius: 25px;
-    border: none;
-    font-size: 16px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    outline: none;
-    transition: box-shadow 0.3s ease;
-  }
-  input[type="text"]:focus {
-    box-shadow: 0 0 10px #00f2fe;
-  }
-  button {
-    margin-left: 10px;
-    padding: 12px 20px;
-    border-radius: 25px;
-    border: none;
-    background: #00bfff;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  button:hover {
-    background-color: #0099cc;
-  }
-  #response {
-    margin-top: 30px;
-    font-size: 20px;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    min-height: 48px;
-  }
-  iframe#musicFrame {
-    border-radius: 15px;
-    margin-top: 20px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-</style>
-</head>
-<body>
-<h1>MoodMusic 🎵</h1>
+<!-- index.html -->
+
 <input type="text" id="mood" placeholder="How are you feeling today?" />
 <button onclick="generateResponse()">Go</button>
 <p id="response"></p>
 
-<iframe
-  id="musicFrame"
-  width="300"
-  height="80"
-  style="border:none; margin-top: 20px;"
-  allow="autoplay"
-></iframe>
+<!-- Breathing exercise container (hidden by default) -->
+<div id="breathingExercise" style="display:none; margin-top: 20px; color: #fff;">
+  <h3>Try this breathing exercise to feel better:</h3>
+  <p id="breathInstruction" style="font-size: 1.2em;"></p>
+  <button onclick="startBreathing()">Start Breathing Exercise</button>
+</div>
 
-<script>
-function generateResponse() {
-  const moodInput = document.getElementById('mood');
-  const mood = moodInput.value.toLowerCase().trim();
-  const responseEl = document.getElementById('response');
-  const musicFrame = document.getElementById('musicFrame');
+<script src="main.js"></script>
+<link rel="stylesheet" href="style.css">
 
-  const responses = {
-    happy: ["Keep that joy flowing 🌞", "Smile and share the vibes! 😄"],
-    sad: ["It's okay. Take a deep breath 🌧️", "Things will get better 🌈"],
-    excited: ["Ride the wave! 🚀", "Channel that energy! 🔥"],
-    default: ["Stay grounded, stay curious.", "Every emotion has its place."]
-  };
-
-  const musicLinks = {
-    happy: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
-    sad: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
-    excited: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v"
-  };
-
-  // Show response text
-  const responseList = responses[mood] || responses.default;
-  responseEl.textContent = responseList[Math.floor(Math.random() * responseList.length)];
-
-  // Update music iframe or clear if no match
-  if (musicLinks[mood]) {
-    musicFrame.src = musicLinks[mood];
-  } else {
-    musicFrame.src = "";
-  }
-}
-</script>
-</body>
-</html>
+<iframe id="musicFrame" width="300" height="80" style="border:none; margin-top: 30px;"></iframe>
