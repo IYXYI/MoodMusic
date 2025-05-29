@@ -73,7 +73,82 @@
     <p>Try this breathing exercise: Breathe in for 4 seconds, hold for 7, breathe out for 8. Repeat 3 times.</p>
   </div>
 
+<div id="breathingGame" style="display:none; margin-top:30px; text-align:center;">
+  <h2>Breathe with me</h2>
+  <div id="breathCircle" style="
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(255 255 255 / 0.5);
+    transition: all 4s ease-in-out;
+  "></div>
+  <p id="breathInstruction" style="font-size:1.2rem; color:white;"></p>
+  <button id="startBreathBtn" style="
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background-color: #fff;
+    color: #0072ff;
+  ">Start Breathing Exercise</button>
+  <button id="stopBreathBtn" style="display:none; margin-left:10px; padding: 10px 20px; font-size: 1rem; cursor:pointer; border-radius:8px; border:none; background-color:#ff4d4d; color:white;">Stop</button>
+</div>
+
+
+
+  
 <script>
+    const breathingGame = document.getElementById('breathingGame');
+  const breathCircle = document.getElementById('breathCircle');
+  const breathInstruction = document.getElementById('breathInstruction');
+  const startBreathBtn = document.getElementById('startBreathBtn');
+  const stopBreathBtn = document.getElementById('stopBreathBtn');
+
+  let breathInterval;
+  let breathStep = 0;
+
+  function breatheCycle() {
+    switch(breathStep) {
+      case 0:
+        breathInstruction.textContent = "Breathe in slowly...";
+        breathCircle.style.transform = "scale(1.5)";
+        break;
+      case 1:
+        breathInstruction.textContent = "Hold your breath...";
+        // Keep circle expanded
+        break;
+      case 2:
+        breathInstruction.textContent = "Breathe out slowly...";
+        breathCircle.style.transform = "scale(1)";
+        break;
+      case 3:
+        breathInstruction.textContent = "Hold...";
+        // Keep circle small
+        break;
+    }
+    breathStep = (breathStep + 1) % 4;
+  }
+
+  startBreathBtn.onclick = () => {
+    breathingGame.style.display = 'block';
+    startBreathBtn.style.display = 'none';
+    stopBreathBtn.style.display = 'inline-block';
+    breatheCycle(); // start immediately
+    breathInterval = setInterval(breatheCycle, 4000); // 4 seconds per step
+  };
+
+  stopBreathBtn.onclick = () => {
+    clearInterval(breathInterval);
+    breathInstruction.textContent = "";
+    breathCircle.style.transform = "scale(1)";
+    breathingGame.style.display = 'none';
+    startBreathBtn.style.display = 'inline-block';
+    stopBreathBtn.style.display = 'none';
+  };
+  
   const startBtn = document.getElementById('startBtn');
   const responseEl = document.getElementById('response');
   const musicFrame = document.getElementById('musicFrame');
