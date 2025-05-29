@@ -1,17 +1,76 @@
-<!-- index.html -->
-<script src="main.js"></script>
-<link rel="stylesheet" href="style.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mood Music App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin: 5px;
+      font-size: 16px;
+    }
+    #musicFrame {
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    #response {
+      margin-top: 20px;
+      font-size: 20px;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="mood" placeholder="How are you feeling today?" />
+  <button onclick="generateResponse()">Go</button>
+  <p id="response"></p>
 
-<input type="text" id="mood" placeholder="How are you feeling today?" />
-<button onclick="generateResponse()">Go</button>
-<p id="response"></p>
+  <iframe id="musicFrame" width="300" height="80" style="border:none;"></iframe>
 
-<!-- Breathing exercise container (hidden by default) -->
-<div id="breathingExercise" style="display:none; margin-top: 20px; color: #fff;">
-  <h3>Try this breathing exercise to feel better:</h3>
-  <p id="breathInstruction" style="font-size: 1.2em;"></p>
-  <button onclick="startBreathing()">Start Breathing Exercise</button>
-</div>
+  <script>
+    function generateResponse() {
+      const moodInput = document.getElementById('mood');
+      const mood = moodInput.value.trim().toLowerCase();
+      const responseEl = document.getElementById('response');
+      const musicFrame = document.getElementById('musicFrame');
 
+      const responses = {
+        happy: ["Keep that joy flowing 🌞", "Smile and share the vibes! 😄"],
+        sad: ["It's okay. Take a deep breath 🌧️", "Things will get better 🌈"],
+        excited: ["Ride the wave! 🚀", "Channel that energy! 🔥"],
+        default: ["Stay grounded, stay curious.", "Every emotion has its place."]
+      };
 
-<iframe id="musicFrame" width="300" height="80" style="border:none; margin-top: 30px;"></iframe>
+      const musicLinks = {
+        happy: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
+        sad: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
+        excited: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v"
+      };
+
+      // Pick a random response for the mood or default
+      const responseList = responses[mood] || responses.default;
+      responseEl.textContent = responseList[Math.floor(Math.random() * responseList.length)];
+
+      // Show the music playlist or clear the iframe if mood not recognized
+      if (musicLinks[mood]) {
+        musicFrame.src = musicLinks[mood];
+        musicFrame.style.display = "inline";
+      } else {
+        musicFrame.src = "";
+        musicFrame.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
