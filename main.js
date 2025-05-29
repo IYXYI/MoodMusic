@@ -14,3 +14,12 @@ const responses = {
 const responseList = responses[mood] || responses.default;
 responseEl.textContent = responseList[Math.floor(Math.random() * responseList.length)];
 }
+
+
+const musicLinks = {
+  happy: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
+  sad: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
+  excited: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
+};
+
+document.getElementById("musicFrame").src = musicLinks[mood] || "";
