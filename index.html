@@ -1,9 +1,26 @@
 <!-- index.html -->
-<input type="text" id="mood" placeholder="How are you feeling today?" />
-<button onclick="generateResponse()">Go</button>
-<p id="response"></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoodMusic</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>MoodMusic 🎵</h1>
+  <input type="text" id="mood" placeholder="How are you feeling today?" />
+  <button onclick="generateResponse()">Go</button>
+  <p id="response"></p>
 
-<script src="main.js"></script>
-<link rel="stylesheet" href="style.css">
+  <iframe
+    id="musicFrame"
+    width="300"
+    height="80"
+    style="border:none; margin-top: 20px;"
+    allow="autoplay"
+  ></iframe>
 
-<iframe id="musicFrame" width="300" height="80" style="border:none;"></iframe>
+  <script src="main.js"></script>
+</body>
+</html>
