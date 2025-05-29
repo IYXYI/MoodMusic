@@ -97,9 +97,6 @@
   <button id="stopBreathBtn" style="display:none; margin-left:10px; padding: 10px 20px; font-size: 1rem; cursor:pointer; border-radius:8px; border:none; background-color:#ff4d4d; color:white;">Stop</button>
 </div>
 
-
-
-  
 <script>
 const breathingGame = document.getElementById('breathingGame');
 const breathCircle = document.getElementById('breathCircle');
@@ -131,9 +128,10 @@ function breatheCycle() {
 }
 
 startBreathBtn.onclick = () => {
-  // Start breathing only if not already running
   if (!breathInterval) {
+    breathStep = 0; // Reset step on start
     breatheCycle(); // start immediately
+    clearInterval(breathInterval);
     breathInterval = setInterval(breatheCycle, 4000); // 4 seconds per step
     startBreathBtn.style.display = 'none';
     stopBreathBtn.style.display = 'inline-block';
@@ -143,6 +141,7 @@ startBreathBtn.onclick = () => {
 stopBreathBtn.onclick = () => {
   clearInterval(breathInterval);
   breathInterval = null;
+  breathStep = 0; // Reset on stop
   breathInstruction.textContent = "";
   breathCircle.style.transform = "scale(1)";
   breathingGame.style.display = 'none';
@@ -198,6 +197,7 @@ startBtn.onclick = () => {
   breathingGame.style.display = 'none';
   clearInterval(breathInterval);
   breathInterval = null;
+  breathStep = 0;
   breathInstruction.textContent = "";
   breathCircle.style.transform = "scale(1)";
   startBreathBtn.style.display = 'inline-block';
@@ -236,10 +236,12 @@ if (recognition) {
       breathCircle.style.transform = "scale(1)";
       clearInterval(breathInterval);
       breathInterval = null;
+      breathStep = 0;
     } else {
       breathingGame.style.display = 'none';
       clearInterval(breathInterval);
       breathInterval = null;
+      breathStep = 0;
       breathInstruction.textContent = "";
       breathCircle.style.transform = "scale(1)";
       startBreathBtn.style.display = 'inline-block';
@@ -249,10 +251,11 @@ if (recognition) {
 
   recognition.onerror = (event) => {
     responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
+    recognition.stop();
   };
 
   recognition.onend = () => {
-    // Recognition stops automatically after user stops speaking
+    // Optional: you can restart recognition automatically here if you want
   };
 }
 </script>
