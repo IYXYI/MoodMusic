@@ -17,42 +17,87 @@
     overflow: hidden;
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     transition: background 1.5s ease;
+    padding: 20px;
   }
-  #modeSelector {
-    margin-bottom: 20px;
+
+  h1 {
+    margin-bottom: 30px;
   }
-  #modeSelector label {
-    margin-right: 15px;
-    font-size: 1.2rem;
-    cursor: pointer;
+
+  #choiceContainer {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30px;
   }
-  #startBtn {
-    padding: 20px 40px;
-    font-size: 1.5rem;
-    background: #fff;
+  .choiceBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255 255 255 / 0.9);
     color: #2575fc;
-    border: none;
-    border-radius: 12px;
+    font-size: 3rem;
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
     cursor: pointer;
-    margin-bottom: 20px;
-    box-shadow: 0 0 15px #fff;
+    box-shadow: 0 0 15px #2575fc;
+    user-select: none;
+    transition: background 0.3s;
   }
-  #textInputContainer {
-    margin-bottom: 20px;
+  .choiceBtn:hover {
+    background: #2575fc;
+    color: white;
+  }
+  .choiceBtn span {
+    font-size: 1.3rem;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  #typedMoodContainer {
     display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
   }
-  #textInput {
-    padding: 10px;
+  #typedMoodInput {
+    padding: 10px 15px;
     font-size: 1.2rem;
     border-radius: 8px;
     border: none;
-    width: 300px;
+    width: 200px;
   }
+  #typedMoodSubmit {
+    padding: 10px 25px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #2575fc;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 10px #2575fcaa;
+  }
+  #typedMoodSubmit:hover {
+    background-color: #1a53c0;
+  }
+
   #response {
     font-size: 2rem;
     margin-bottom: 40px;
     min-height: 48px;
+    text-align: center;
+    max-width: 600px;
   }
+  #musicFrame {
+    border-radius: 15px;
+    box-shadow: 0 0 20px #fff;
+    width: 320px;
+    height: 80px;
+    margin-top: 20px;
+  }
+
   #chatbot {
     position: fixed;
     bottom: 40px;
@@ -73,252 +118,290 @@
   #chatbot p {
     font-size: 1rem;
   }
-  iframe {
-    border-radius: 15px;
-    box-shadow: 0 0 20px #fff;
-    width: 320px;
-    height: 80px;
-    margin-top: 20px;
+
+  #breathingGame {
+    display: none; 
+    margin-top: 30px; 
+    text-align: center;
+    max-width: 400px;
   }
+  #breathCircle {
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(255 255 255 / 0.5);
+    transition: all 4s ease-in-out;
+  }
+  #breathInstruction {
+    font-size: 1.2rem; 
+    color: white;
+  }
+  #startBreathBtn, #stopBreathBtn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+  }
+  #startBreathBtn {
+    background-color: #fff;
+    color: #0072ff;
+  }
+  #stopBreathBtn {
+    background-color: #ff4d4d;
+    color: white;
+    margin-left: 10px;
+    display: none;
+  }
+
 </style>
 </head>
 <body>
 
-  <div id="modeSelector">
-    <label><input type="radio" name="mode" value="speech" checked> Speech Recognition</label>
-    <label><input type="radio" name="mode" value="text"> Text Input</label>
+  <h1>How would you like to tell me your mood?</h1>
+
+  <div id="choiceContainer">
+    <div id="speechChoice" class="choiceBtn" title="Use Speech Recognition">
+      🎤
+      <span>Speak</span>
+    </div>
+    <div id="typeChoice" class="choiceBtn" title="Type Your Mood">
+      ✍️
+      <span>Type</span>
+    </div>
   </div>
 
-  <div id="textInputContainer">
-    <input type="text" id="textInput" placeholder="Type your mood here..." />
+  <div id="typedMoodContainer">
+    <input id="typedMoodInput" type="text" placeholder="Type your mood here..." />
+    <button id="typedMoodSubmit">Submit</button>
   </div>
 
-  <button id="startBtn">Start</button>
   <div id="response"></div>
-  <iframe id="musicFrame" src="" allow="autoplay"></iframe>
-  
+
+  <iframe id="musicFrame" src="" allow="autoplay" ></iframe>
+
   <div id="chatbot">
     <h3>Hey, I noticed you're feeling sad 😔</h3>
     <p>Try this breathing exercise: Breathe in for 4 seconds, hold for 7, breathe out for 8. Repeat 3 times.</p>
   </div>
 
-  <div id="breathingGame" style="display:none; margin-top:30px; text-align:center;">
+  <div id="breathingGame">
     <h2>Breathe with me</h2>
-    <div id="breathCircle" style="
-      margin: 20px auto;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: rgba(255 255 255 / 0.5);
-      transition: all 4s ease-in-out;
-    "></div>
-    <p id="breathInstruction" style="font-size:1.2rem; color:white;"></p>
-    <button id="startBreathBtn" style="
-      padding: 10px 20px;
-      font-size: 1rem;
-      margin-top: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      background-color: #fff;
-      color: #0072ff;
-    ">Start Breathing Exercise</button>
-    <button id="stopBreathBtn" style="display:none; margin-left:10px; padding: 10px 20px; font-size: 1rem; cursor:pointer; border-radius:8px; border:none; background-color:#ff4d4d; color:white;">Stop</button>
+    <div id="breathCircle"></div>
+    <p id="breathInstruction"></p>
+    <button id="startBreathBtn">Start Breathing Exercise</button>
+    <button id="stopBreathBtn">Stop</button>
   </div>
 
 <script>
-const breathingGame = document.getElementById('breathingGame');
-const breathCircle = document.getElementById('breathCircle');
-const breathInstruction = document.getElementById('breathInstruction');
-const startBreathBtn = document.getElementById('startBreathBtn');
-const stopBreathBtn = document.getElementById('stopBreathBtn');
+  const choiceContainer = document.getElementById('choiceContainer');
+  const speechChoice = document.getElementById('speechChoice');
+  const typeChoice = document.getElementById('typeChoice');
+  const typedMoodContainer = document.getElementById('typedMoodContainer');
+  const typedMoodInput = document.getElementById('typedMoodInput');
+  const typedMoodSubmit = document.getElementById('typedMoodSubmit');
+  const responseEl = document.getElementById('response');
+  const musicFrame = document.getElementById('musicFrame');
+  const chatbot = document.getElementById('chatbot');
+  const breathingGame = document.getElementById('breathingGame');
+  const breathCircle = document.getElementById('breathCircle');
+  const breathInstruction = document.getElementById('breathInstruction');
+  const startBreathBtn = document.getElementById('startBreathBtn');
+  const stopBreathBtn = document.getElementById('stopBreathBtn');
 
-let breathInterval;
-let breathStep = 0;
+  let breathInterval;
+  let breathStep = 0;
 
-function breatheCycle() {
-  switch(breathStep) {
-    case 0:
-      breathInstruction.textContent = "Breathe in slowly...";
-      breathCircle.style.transform = "scale(1.5)";
-      break;
-    case 1:
-      breathInstruction.textContent = "Hold your breath...";
-      break;
-    case 2:
-      breathInstruction.textContent = "Breathe out slowly...";
-      breathCircle.style.transform = "scale(1)";
-      break;
-    case 3:
-      breathInstruction.textContent = "Hold...";
-      break;
+  function breatheCycle() {
+    switch(breathStep) {
+      case 0:
+        breathInstruction.textContent = "Breathe in slowly...";
+        breathCircle.style.transform = "scale(1.5)";
+        break;
+      case 1:
+        breathInstruction.textContent = "Hold your breath...";
+        break;
+      case 2:
+        breathInstruction.textContent = "Breathe out slowly...";
+        breathCircle.style.transform = "scale(1)";
+        break;
+      case 3:
+        breathInstruction.textContent = "Hold...";
+        break;
+    }
+    breathStep = (breathStep + 1) % 4;
   }
-  breathStep = (breathStep + 1) % 4;
-}
 
-startBreathBtn.onclick = () => {
-  if (!breathInterval) {
-    breathStep = 0;
-    breatheCycle();
-    clearInterval(breathInterval);
-    breathInterval = setInterval(breatheCycle, 4000);
-    startBreathBtn.style.display = 'none';
-    stopBreathBtn.style.display = 'inline-block';
-  }
-};
+  startBreathBtn.onclick = () => {
+    if (!breathInterval) {
+      breathStep = 0; // Reset step on start
+      breatheCycle(); // start immediately
+      clearInterval(breathInterval);
+      breathInterval = setInterval(breatheCycle, 4000); // 4 seconds per step
+      startBreathBtn.style.display = 'none';
+      stopBreathBtn.style.display = 'inline-block';
+    }
+  };
 
-stopBreathBtn.onclick = () => {
-  clearInterval(breathInterval);
-  breathInterval = null;
-  breathStep = 0;
-  breathInstruction.textContent = "";
-  breathCircle.style.transform = "scale(1)";
-  breathingGame.style.display = 'none';
-  startBreathBtn.style.display = 'inline-block';
-  stopBreathBtn.style.display = 'none';
-};
-
-const startBtn = document.getElementById('startBtn');
-const responseEl = document.getElementById('response');
-const musicFrame = document.getElementById('musicFrame');
-const chatbot = document.getElementById('chatbot');
-const textInputContainer = document.getElementById('textInputContainer');
-const textInput = document.getElementById('textInput');
-const modeRadios = document.querySelectorAll('input[name="mode"]');
-
-const moods = {
-  happy: {
-    messages: ["You're radiating joy! Keep shining! 🌞", "Spread those good vibes! 😄"],
-    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
-    bg: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
-    showChatbot: false,
-  },
-  sad: {
-    messages: ["It's okay to feel down sometimes 🌧️", "This too shall pass 🌈"],
-    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
-    bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    showChatbot: true,
-  },
-  excited: {
-    messages: ["You're on fire! Keep it up! 🚀", "Let's channel that energy! 🔥"],
-    music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
-    bg: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
-    showChatbot: false,
-  },
-  default: {
-    messages: ["Stay curious and grounded.", "Every feeling is valid."],
-    music: "",
-    bg: 'linear-gradient(135deg, #00c6ff, #0072ff)',
-    showChatbot: false,
-  }
-};
-
-// Speech recognition setup
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = SpeechRecognition ? new SpeechRecognition() : null;
-
-function resetBreathingGame() {
-  clearInterval(breathInterval);
-  breathInterval = null;
-  breathStep = 0;
-  breathInstruction.textContent = "";
-  breathCircle.style.transform = "scale(1)";
-  breathingGame.style.display = 'none';
-  startBreathBtn.style.display = 'inline-block';
-  stopBreathBtn.style.display = 'none';
-}
-
-function processMoodInput(input) {
-  const lowerInput = input.toLowerCase();
-  let detectedMood = Object.keys(moods).find(mood =>
-    lowerInput.includes(mood)
-  ) || 'default';
-
-  const moodData = moods[detectedMood];
-
-  // Update background
-  document.body.style.background = moodData.bg;
-
-  // Show message
-  const msg = moodData.messages[Math.floor(Math.random() * moodData.messages.length)];
-  responseEl.textContent = msg;
-
-  // Set music iframe
-  musicFrame.src = moodData.music || '';
-
-  // Show chatbot if mood sad
-  chatbot.style.display = moodData.showChatbot ? 'flex' : 'none';
-
-  // Show breathing game if sad, else hide and reset
-  if (detectedMood === 'sad') {
-    breathingGame.style.display = 'block';
-    startBreathBtn.style.display = 'inline-block';
-    stopBreathBtn.style.display = 'none';
-    breathInstruction.textContent = "";
-    breathCircle.style.transform = "scale(1)";
+  stopBreathBtn.onclick = () => {
     clearInterval(breathInterval);
     breathInterval = null;
-    breathStep = 0;
-  } else {
-    resetBreathingGame();
-  }
-}
+    breathStep = 0; // Reset on stop
+    breathInstruction.textContent = "";
+    breathCircle.style.transform = "scale(1)";
+    breathingGame.style.display = 'none';
+    startBreathBtn.style.display = 'inline-block';
+    stopBreathBtn.style.display = 'none';
+  };
 
-modeRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    if (radio.value === 'text') {
-      textInputContainer.style.display = 'block';
-      startBtn.textContent = 'Submit Mood';
-      resetBreathingGame();
-      chatbot.style.display = 'none';
-      responseEl.textContent = '';
-      musicFrame.src = '';
-    } else {
-      textInputContainer.style.display = 'none';
-      startBtn.textContent = 'Speak Your Mood';
-      responseEl.textContent = '';
-      musicFrame.src = '';
-      resetBreathingGame();
-      chatbot.style.display = 'none';
+  const moods = {
+    happy: {
+      messages: ["You're radiating joy! Keep shining! 🌞", "Spread those good vibes! 😄"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0",
+      bg: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+      showChatbot: false,
+    },
+    sad: {
+      messages: ["It's okay to feel down sometimes 🌧️", "This too shall pass 🌈"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWVrtsSlLKzro",
+      bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      showChatbot: true,
+    },
+    excited: {
+      messages: ["You're on fire! Keep it up! 🚀", "Let's channel that energy! 🔥"],
+      music: "https://open.spotify.com/embed/playlist/37i9dQZF1DWZ7mSWCFIT7v",
+      bg: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
+      showChatbot: false,
+    },
+    default: {
+      messages: ["Stay curious and grounded.", "Every feeling is valid."],
+      music: "",
+      bg: 'linear-gradient(135deg, #00c6ff, #0072ff)',
+      showChatbot: false,
     }
-  });
-});
+  };
 
-startBtn.onclick = () => {
-  const selectedMode = document.querySelector('input[name="mode"]:checked').value;
+  // Speech recognition setup
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
-  if (selectedMode === 'speech') {
+  // When user clicks speech icon
+  speechChoice.onclick = () => {
     if (!recognition) {
       alert('Sorry, your browser does not support speech recognition.');
       return;
     }
-    recognition.lang = 'en-US';
-    recognition.start();
+    choiceContainer.style.display = 'none';
+    typedMoodContainer.style.display = 'none';
     responseEl.textContent = 'Listening... Speak your mood';
     chatbot.style.display = 'none';
-    resetBreathingGame();
-  } else {
-    // Text mode
-    const userMood = textInput.value.trim();
-    if (!userMood) {
+    breathingGame.style.display = 'none';
+    clearInterval(breathInterval);
+    breathInterval = null;
+    breathStep = 0;
+    breathInstruction.textContent = "";
+    breathCircle.style.transform = "scale(1)";
+    startBreathBtn.style.display = 'inline-block';
+    stopBreathBtn.style.display = 'none';
+
+    recognition.lang = 'en-US';
+    recognition.start();
+  };
+
+  // When user clicks type icon
+  typeChoice.onclick = () => {
+    choiceContainer.style.display = 'none';
+    typedMoodContainer.style.display = 'flex';
+    responseEl.textContent = '';
+    chatbot.style.display = 'none';
+    breathingGame.style.display = 'none';
+    clearInterval(breathInterval);
+    breathInterval = null;
+    breathStep = 0;
+    breathInstruction.textContent = "";
+    breathCircle.style.transform = "scale(1)";
+    startBreathBtn.style.display = 'inline-block';
+    stopBreathBtn.style.display = 'none';
+  };
+
+  // Handle typed mood submit
+  typedMoodSubmit.onclick = () => {
+    const typedMood = typedMoodInput.value.trim().toLowerCase();
+    if (!typedMood) {
       alert('Please type your mood.');
       return;
     }
-    processMoodInput(userMood);
+    handleMood(typedMood);
+  };
+
+  // Also allow pressing Enter key in input to submit
+  typedMoodInput.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      typedMoodSubmit.click();
+    }
+  });
+
+  if (recognition) {
+    recognition.onresult = (event) => {
+      let spokenText = event.results[0][0].transcript.toLowerCase();
+      handleMood(spokenText);
+    };
+
+    recognition.onerror = (event) => {
+      responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
+      recognition.stop();
+    };
+
+    recognition.onend = () => {
+      // Can restart automatically if you want
+    };
   }
-};
 
-if (recognition) {
-  recognition.onresult = (event) => {
-    let spokenText = event.results[0][0].transcript.toLowerCase();
-    processMoodInput(spokenText);
-  };
+  function handleMood(moodText) {
+    // Detect mood by keyword match, else default
+    let detectedMood = Object.keys(moods).find(mood =>
+      moodText.includes(mood)
+    ) || 'default';
 
-  recognition.onerror = (event) => {
-    responseEl.textContent = 'Sorry, I did not catch that. Please try again.';
-    recognition.stop();
-  };
-}
+    const moodData = moods[detectedMood];
+
+    // Update background
+    document.body.style.background = moodData.bg;
+
+    // Show message
+    const msg = moodData.messages[Math.floor(Math.random() * moodData.messages.length)];
+    responseEl.textContent = msg;
+
+    // Set music iframe
+    musicFrame.src = moodData.music || '';
+
+    // Show chatbot if mood sad
+    chatbot.style.display = moodData.showChatbot ? 'flex' : 'none';
+
+    // Show breathing game if sad, else hide and reset
+    if (detectedMood === 'sad') {
+      breathingGame.style.display = 'block';
+      startBreathBtn.style.display = 'inline-block';
+      stopBreathBtn.style.display = 'none';
+      breathInstruction.textContent = "";
+      breathCircle.style.transform = "scale(1)";
+      clearInterval(breathInterval);
+      breathInterval = null;
+      breathStep = 0;
+    } else {
+      breathingGame.style.display = 'none';
+      clearInterval(breathInterval);
+      breathInterval = null;
+      breathStep = 0;
+      breathInstruction.textContent = "";
+      breathCircle.style.transform = "scale(1)";
+      startBreathBtn.style.display = 'inline-block';
+      stopBreathBtn.style.display = 'none';
+    }
+  }
 </script>
+
 </body>
 </html>
